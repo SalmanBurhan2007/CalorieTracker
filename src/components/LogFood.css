@@ -1,0 +1,86 @@
+.logfood-container {
+  padding: 20px;
+  font-family: 'Georgia', serif;
+  background-color: white;
+  z-index: 1;
+
+}
+
+.logfood-search {
+  display: flex;
+  align-items: center;
+  background-color: #f3f3f3;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin-bottom: 15px;
+    z-index: 1;
+
+}
+
+.logfood-search input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 16px;
+  flex-grow: 1;
+  font-weight: bold;
+    z-index: 1;
+}
+
+.logfood-most-recent {
+  font-weight: bold;
+  margin-left: 10px;
+  background-color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.logfood-history-title {
+  color: #006400;
+  margin: 10px 0;
+}
+
+.logfood-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.logfood-item {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f2f2f2;
+  padding: 10px 15px;
+  border-radius: 5px;
+  align-items: center;
+}
+
+.logfood-item p {
+  margin: 5px 0 0;
+  font-size: 0.9em;
+}
+
+.logfood-add-btn {
+  background-color: #004d26;
+  color: white;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.logfood-add-btn:hover {
+  background-color: #007a4d;
+}
+
+.logfood-footer {
+  margin-top: 30px;
+  text-align: center;
+  background-color: #006400;
+  color: white;
+  padding: 10px 0;
+  font-weight: bold;
+}

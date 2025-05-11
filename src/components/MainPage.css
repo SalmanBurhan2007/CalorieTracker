@@ -1,0 +1,165 @@
+.main-page {
+  padding: 30px;
+  z-index: 1;
+}
+
+.date-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #064e3b;
+   position: relative; /* Or use absolute if needed */
+  right: -350px; /* Adjust the value to move it to the right */
+}
+
+.streak-title {
+  font-size: 13px;
+  margin-bottom: 20px;
+  text-align: right;
+  color: #064e3b;
+  position: absolute;
+  left: 1450px; /* Distance from the left of the nearest positioned ancestor */
+  top: 245px; /* Distance from the top of the nearest positioned ancestor */
+
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center; /* Centers cards horizontally */
+}
+
+.card {
+  background-color: #f8f9fa;
+  border: 3px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  flex: 1;
+  min-width: 250px;
+  max-width: 500px;
+  max-height: 300px;;
+
+    /* Flexbox properties to center content */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
+  text-align: center; /* Center text inside the card */
+}
+
+/* Calories Container */
+.calories-container {
+  display: flex;
+  justify-content: space-between; /* Align left and right sections */
+  align-items: center; /* Vertically align content */
+  gap: 20px; /* Add spacing between the sections */
+}
+
+/* Left: Calories Circle */
+.calories-circle {
+  width: 120px; /* Diameter of the circle */
+  height: 120px;
+  background-color: #065f46; /* Circle color */
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.calories-circle .label {
+  font-size: 12px;
+  margin-top: 5px;
+  color: white;
+}
+
+/* Right: Calories Details */
+.calories-details {
+  font-size: 14px;
+  color: #555;
+  text-align: left;
+}
+
+.calories-details div {
+  margin-bottom: 5px;
+}
+
+.calories-details strong {
+  color: #064e3b;
+}
+
+.calories-amount {
+  font-size: 35px;
+  font-weight: bold;
+  color: white; /* Text color inside the circle */
+}
+
+.label {
+  color: #665;
+  margin-bottom: 10px;
+}
+
+.calories-details div {
+  margin-top: 5px;
+}
+
+/* Macros Card */
+.macros-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 3px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  text-align: center;
+}
+
+/* Macros Details */
+.macros-details {
+  margin-top: 15px;
+  width: 100%;
+}
+
+.macro-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.macro-label {
+  font-weight: bold;
+  color: #064e3b; /* Green color for labels */
+}
+
+.macro-value {
+  font-weight: bold;
+  color: #555; /* Neutral color for values */
+}
+
+
+.premium-btn:hover {
+  background-color: #0e9e6e; /* Darker green on hover */
+}
+
+.quote-section {
+
+  z-index: 0;
+  margin-top: 30px;
+  background-color: #fef3c7;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.quote-section blockquote {
+  font-style: italic;
+  color: #374151;
+}

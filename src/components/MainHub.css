@@ -1,0 +1,148 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f3f3f3;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+.header {
+  background-color: #064e3b;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  max-height: 100px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 100px;
+  font-weight: bold;
+  font-family: "Times New Roman", serif;
+}
+
+/* Logo image */
+.masjid-image
+{
+  position: absolute;
+  left: 700px; /* Distance from the left of the nearest positioned ancestor */
+   width: 130px;/* Force the width */
+  height: auto; /* Force the height */
+  
+}
+
+/* Vertical strip */
+.vertical-strip {
+  background-color: white;
+  height: 20%; /* Adjust the height of the strip */
+  width: 40px;
+  top: -30px;
+    position: absolute;
+    right: 100vh; /* Adjust the left position */
+   transform: rotate(30deg); /* Rotates the strip by 45 degrees */
+  z-index: 0; /* Lower stacking order */
+
+}
+
+
+.user-info a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Yellow bar */
+.yellow-bar {
+  background-color: #facc15; /* Yellow-400 */
+  height: 10px;
+}
+
+/* Navigation */
+.nav-bar {
+  background-color: #fef3c7;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  border-bottom: 1px solid #ddd;
+    z-index: 1; /* Lower stacking order */
+
+}
+
+.nav-bar button {
+  background-color: #047857;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nav-bar button:hover {
+  background-color: #065f46;
+}
+
+/* Main content area */
+.main-section {
+  flex-grow: 1;
+  padding: 30px;
+  background-color: #fff;
+}
+
+/* Footer */
+.footer {
+  background-color: #064e3b;
+  color: white;
+  text-align: center;
+  padding: 15px;
+}
+
+/* User Info Section */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between profile and logout link */
+  font-size: 14px;
+  color: white;
+}
+
+/* Profile Container */
+.profile-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between profile picture and user name */
+}
+
+/* Profile Picture */
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Makes the image circular */
+  border: 2px solid white; /* Adds a border around the picture */
+  object-fit: cover; /* Ensures the image fits within the circle */
+}
+
+/* User Name */
+.user-name {
+  font-weight: bold;
+  color: white;
+}
+
+/* Logout Link */
+.logout-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  background-color: #1eaf7f; /* Green background for the button */
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.logout-link:hover {
+  background-color: #0e9e6e; /* Darker green on hover */
+}
