@@ -1,7 +1,8 @@
+/* General styles for the app */
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100vh; /* Ensures the container takes up the full viewport height */
   background-color: #f3f3f3;
   font-family: Arial, sans-serif;
 }
@@ -88,17 +89,17 @@
 
 /* Main content area */
 .main-section {
-  flex-grow: 1;
-  padding: 30px;
+  flex: 1; /* Makes the main section take up the remaining space */
+  padding: 1rem;
   background-color: #fff;
 }
 
 /* Footer */
 .footer {
+  text-align: center;
+  padding: 1rem;
   background-color: #064e3b;
   color: white;
-  text-align: center;
-  padding: 15px;
 }
 
 /* User Info Section */
@@ -146,3 +147,4 @@
 .logout-link:hover {
   background-color: #0e9e6e; /* Darker green on hover */
 }
+
