@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Login from "./Login";
 import MainPage from "./MainPage";
 import Diary from "./Diary";
 import LogFood from "./LogFood";
@@ -6,6 +7,7 @@ import ScanMeal from "./ScanMeal";
 import "./MainHub.css";
 
 function MainHub() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activePage, setActivePage] = useState("main");
 
   const renderPage = () => {
@@ -21,6 +23,10 @@ function MainHub() {
     }
   };
 
+  if (!isLoggedIn) {
+    return <Login onLogin={() => setIsLoggedIn(true)} />;
+  }
+
   return (
     <div className="app-container">
       <header className="header">
@@ -35,7 +41,13 @@ function MainHub() {
             />
             <span className="user-name">Salaam, User!</span>
           </div>
-          <a href="#" className="logout-link">Logout</a>
+          <a
+            href="#"
+            className="logout-link"
+            onClick={() => setIsLoggedIn(false)} // Logout handler
+          >
+            Logout
+          </a>
         </div>
       </header>
 
