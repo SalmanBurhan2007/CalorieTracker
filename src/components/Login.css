@@ -1,3 +1,9 @@
+.login-error {
+  color: #e63946;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
 .login-container {
   display: flex;
   flex-direction: column;
