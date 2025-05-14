@@ -9,32 +9,77 @@ const LogFood = ({ addFoodToDiary }) => {
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
+  const fetchNutritionForCommon = async (food) => {
+    try {
+      const res = await fetch("https://trackapi.nutritionix.com/v2/natural/nutrients", {
+        method: "POST",
+        headers: {
+          "x-app-id": APP_ID,
+          "x-app-key": API_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ query: food.food_name })
+      });
+      const data = await res.json();
+      if (data.foods && data.foods[0]) {
+        return { ...food, ...data.foods[0] };
+      }
+    } catch (e) {
+      // ignore error, return original food
+    }
+    return food;
+  };
+
+  const handleSearch = async () => {
     if (!searchTerm) return;
     setLoading(true);
 
-    fetch("https://trackapi.nutritionix.com/v2/search/instant?query=" + encodeURIComponent(searchTerm), {
-      headers: {
-        "x-app-id": APP_ID,
-        "x-app-key": API_KEY,
-        "Content-Type": "application/json"
+    const res = await fetch(
+      "https://trackapi.nutritionix.com/v2/search/instant?query=" + encodeURIComponent(searchTerm),
+      {
+        headers: {
+          "x-app-id": APP_ID,
+          "x-app-key": API_KEY,
+          "Content-Type": "application/json"
+        }
       }
-    })
-      .then(res => res.json())
-      .then(data => {
-        // Combine common and branded foods for display
-        const results = [
-          ...(data.common || []),
-          ...(data.branded || [])
-        ];
-        setFoods(results);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    );
+    const data = await res.json();
+
+    // Fetch nutrition info for all common foods in parallel
+    const commonFoods = data.common || [];
+    const brandedFoods = data.branded || [];
+
+    const enrichedCommonFoods = await Promise.all(
+      commonFoods.map(fetchNutritionForCommon)
+    );
+
+    const results = [...enrichedCommonFoods, ...brandedFoods];
+    setFoods(results);
+    setLoading(false);
   };
 
   const handleAdd = (food) => {
     if (addFoodToDiary) addFoodToDiary(food);
+  };
+
+  const getCalories = (food) => {
+    if (food.nf_calories) return Math.round(food.nf_calories);
+    if (food.full_nutrients) {
+      const calObj = food.full_nutrients.find(n => n.attr_id === 208);
+      if (calObj) return Math.round(calObj.value);
+    }
+    return "N/A";
+  };
+
+  const getServing = (food) => {
+    if (food.serving_qty && food.serving_unit) {
+      return `${food.serving_qty} ${food.serving_unit}`;
+    }
+    if (food.serving_unit) {
+      return food.serving_unit;
+    }
+    return "";
   };
 
   return (
@@ -62,6 +107,11 @@ const LogFood = ({ addFoodToDiary }) => {
               <div>
                 <strong>{food.food_name || food.name}</strong>
                 <p>{food.brand_name || food.tag_name || ""}</p>
+                <p>
+                  <span>Calories: {getCalories(food)}</span>
+                  <br />
+                  <span>Serving: {getServing(food)}</span>
+                </p>
               </div>
               <button className="logfood-add-btn" onClick={() => handleAdd(food)}>+</button>
             </div>

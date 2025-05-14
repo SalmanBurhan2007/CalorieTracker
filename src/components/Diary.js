@@ -124,7 +124,9 @@ function Diary({ loggedFoods = [] }) {
             <div className="food-item" key={idx}>
               <strong>{food.food_name || food.name}</strong>
               <p>
-                {food.nf_calories ? `${food.nf_calories} calories` : ""}
+                {food.nf_calories !== undefined
+                  ? `${Math.round(food.nf_calories)} calories`
+                  : ""}
                 {food.serving_qty && food.serving_unit
                   ? `, ${food.serving_qty} ${food.serving_unit}`
                   : ""}
