@@ -1,10 +1,18 @@
 import React from "react";
 import "./MainPage.css";
 
-function MainPage() {
-  const baseGoal = 2000; // Example base goal
-  const foodCalories = 500; // Example food calories consumed
-  const remainingCalories = baseGoal - foodCalories; // Calculate remaining calories
+function MainPage({ loggedFoods = [] }) {
+  const baseGoal = 2000;
+
+  // Calculate total calories from logged foods
+  const foodCalories = loggedFoods.reduce((sum, food) => {
+    if (food.nf_calories !== undefined && !isNaN(food.nf_calories)) {
+      return sum + Math.round(food.nf_calories);
+    }
+    return sum;
+  }, 0);
+
+  const remainingCalories = baseGoal - foodCalories;
 
   return (
     <div className="main-page">
