@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Diary.css';
 
-function Diary() {
+function Diary({ loggedFoods = [] }) {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState(""); // State for the new note input
   const [currentDate, setCurrentDate] = useState(new Date()); // State to manage the current date
@@ -117,20 +117,22 @@ function Diary() {
       {/* Food Log */}
       <section className="food-log">
         <h3>Food Logged today</h3>
-        <h4>Breakfast</h4>
-        <div className="food-item">
-          <strong>Eggs</strong>
-          <p>72 calories, 1.0 Large</p>
-        </div>
-        <div className="food-item">
-          <strong>Apple</strong>
-          <p>112 calories, 1.0 Large</p>
-        </div>
-        <div className="total-cal">
-          <strong>194 Cal.</strong>
-        </div>
+        {loggedFoods.length === 0 ? (
+          <div>No foods logged yet.</div>
+        ) : (
+          loggedFoods.map((food, idx) => (
+            <div className="food-item" key={idx}>
+              <strong>{food.food_name || food.name}</strong>
+              <p>
+                {food.nf_calories ? `${food.nf_calories} calories` : ""}
+                {food.serving_qty && food.serving_unit
+                  ? `, ${food.serving_qty} ${food.serving_unit}`
+                  : ""}
+              </p>
+            </div>
+          ))
+        )}
       </section>
-
     </div>
   );
 }

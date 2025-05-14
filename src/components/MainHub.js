@@ -1,21 +1,26 @@
 import React, { useState } from "react";
-import Login from "./Login";
 import MainPage from "./MainPage";
 import Diary from "./Diary";
 import LogFood from "./LogFood";
 import ScanMeal from "./ScanMeal";
+import Login from "./Login"; // Make sure you have this component
 import "./MainHub.css";
 
 function MainHub() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activePage, setActivePage] = useState("main");
+  const [loggedFoods, setLoggedFoods] = useState([]);
+
+  const addFoodToDiary = (food) => {
+    setLoggedFoods((prev) => [...prev, food]);
+  };
 
   const renderPage = () => {
     switch (activePage) {
       case "diary":
-        return <Diary />;
+        return <Diary loggedFoods={loggedFoods} />;
       case "log":
-        return <LogFood />;
+        return <LogFood addFoodToDiary={addFoodToDiary} />;
       case "scan":
         return <ScanMeal />;
       default:
@@ -35,7 +40,7 @@ function MainHub() {
         <div className="user-info">
           <div className="profile-container">
             <img
-              src="/placeholder-profile.png" /* Replace with actual profile picture URL */
+              src="/placeholder-profile.png"
               alt="Profile"
               className="profile-picture"
             />
@@ -44,7 +49,7 @@ function MainHub() {
           <a
             href="#"
             className="logout-link"
-            onClick={() => setIsLoggedIn(false)} // Logout handler
+            onClick={() => setIsLoggedIn(false)}
           >
             Logout
           </a>

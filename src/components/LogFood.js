@@ -4,7 +4,7 @@ import './LogFood.css';
 const APP_ID = "b6075a03"; // Replace with your Nutritionix Application ID
 const API_KEY = "4ccff94382079bd6a8397289b54db3ac"; // Replace with your Nutritionix API Key
 
-const LogFood = () => {
+const LogFood = ({ addFoodToDiary }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ const LogFood = () => {
   };
 
   const handleAdd = (food) => {
-    console.log(`Added: ${food.food_name || food.name}`);
+    if (addFoodToDiary) addFoodToDiary(food);
   };
 
   return (
