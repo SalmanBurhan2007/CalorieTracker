@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./MainPage.css";
 import { db } from "./firebase"; // Adjust the path if needed
 import { getAuth } from "firebase/auth";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
 function MainPage() {
   const baseGoal = 2000;
@@ -10,6 +10,7 @@ function MainPage() {
   const [proteinConsumed, setProteinConsumed] = useState(0);
   const [fatConsumed, setFatConsumed] = useState(0);
   const [carbsConsumed, setCarbsConsumed] = useState(0);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     const auth = getAuth();
@@ -20,8 +21,75 @@ function MainPage() {
       setProteinConsumed(0);
       setFatConsumed(0);
       setCarbsConsumed(0);
+      setStreak(0);
       return;
     }
+
+    // --- STREAK LOGIC START ---
+    const userDocRef = doc(db, "users", user.uid);
+
+    async function handleStreak() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        // First login, initialize streak and lastLogin
+        await setDoc(userDocRef, {
+          streak: 1,
+          lastLogin: today
+        }, { merge: true });
+        setStreak(1);
+        return;
+      }
+
+      const data = userDoc.data();
+      // Firestore Timestamps have a toDate() method, JS Dates do not
+      const lastLogin = data.lastLogin && data.lastLogin.toDate
+        ? data.lastLogin.toDate()
+        : data.lastLogin
+          ? new Date(data.lastLogin)
+          : null;
+      let currentStreak = typeof data.streak === "number" ? data.streak : 0;
+
+      if (!lastLogin) {
+        // No lastLogin recorded, initialize
+        await updateDoc(userDocRef, {
+          streak: 1,
+          lastLogin: today
+        });
+        setStreak(1);
+        return;
+      }
+
+      // Calculate difference in days
+      const diffTime = today.getTime() - lastLogin.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        // Consecutive day
+        currentStreak += 1;
+        await updateDoc(userDocRef, {
+          streak: currentStreak,
+          lastLogin: today
+        });
+        setStreak(currentStreak);
+      } else if (diffDays > 1) {
+        // Missed a day, reset streak
+        await updateDoc(userDocRef, {
+          streak: 0,
+          lastLogin: today
+        });
+        setStreak(0);
+      } else {
+        // Same day login, streak unchanged
+        setStreak(currentStreak);
+      }
+    }
+
+    handleStreak();
+    // --- STREAK LOGIC END ---
 
     // Get start and end of the current day
     const currentDate = new Date();
@@ -77,7 +145,7 @@ function MainPage() {
   return (
     <div className="main-page">
       <h2 className="date-title">{new Date().toDateString()}</h2>
-      <h2 className="streak-title">DAY <br />STREAK</h2>
+      <h2 className="streak-title">DAY <br />STREAK<br /><span>{streak}</span></h2>
       <div className="cards">
         <div className="card">
           <h3>Calories</h3>

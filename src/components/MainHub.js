@@ -35,8 +35,10 @@ function MainHub() {
   return (
     <div className="app-container">
       <header className="header">
-        <h1 className="logo">UmmahWell</h1>
-        <img src="/Masjid.png" alt="Masjid" className="masjid-image" />
+        <div className="logo-container">
+          <h1 className="logo">UmmahWell</h1>
+          <img src="/Masjid.png" alt="Masjid" className="masjid-image" />
+        </div>
         <div className="user-info">
           <div className="profile-container">
             <img

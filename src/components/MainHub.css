@@ -18,20 +18,30 @@
   align-items: center;
 }
 
+/* Logo and image side by side */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Logo image */
+.masjid-image {
+  position: static;
+  width: 130px;
+  height: auto;
+  margin: 0;
+  display: block;
+}
+
+/* Logo text */
 .logo {
   font-size: 100px;
   font-weight: bold;
   font-family: "Times New Roman", serif;
-}
-
-/* Logo image */
-.masjid-image
-{
-  position: absolute;
-  left: 700px; /* Distance from the left of the nearest positioned ancestor */
-   width: 130px;/* Force the width */
-  height: auto; /* Force the height */
-  
+  line-height: 1;
+  margin: 0;
+  display: inline-block;
 }
 
 /* Vertical strip */
@@ -40,66 +50,10 @@
   height: 20%; /* Adjust the height of the strip */
   width: 40px;
   top: -30px;
-    position: absolute;
-    right: 100vh; /* Adjust the left position */
-   transform: rotate(30deg); /* Rotates the strip by 45 degrees */
+  position: absolute;
+  right: 100vh; /* Adjust the left position */
+  transform: rotate(30deg); /* Rotates the strip by 45 degrees */
   z-index: 0; /* Lower stacking order */
-
-}
-
-
-.user-info a {
-  color: #fff;
-  text-decoration: underline;
-}
-
-/* Yellow bar */
-.yellow-bar {
-  background-color: #facc15; /* Yellow-400 */
-  height: 10px;
-}
-
-/* Navigation */
-.nav-bar {
-  background-color: #fef3c7;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  border-bottom: 1px solid #ddd;
-    z-index: 1; /* Lower stacking order */
-
-}
-
-.nav-bar button {
-  background-color: #047857;
-  color: white;
-  border: none;
-  padding: 10px 22px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.nav-bar button:hover {
-  background-color: #065f46;
-}
-
-/* Main content area */
-.main-section {
-  flex: 1; /* Makes the main section take up the remaining space */
-  padding: 1rem;
-  background-color: #fff;
-}
-
-/* Footer */
-.footer {
-  text-align: center;
-  padding: 1rem;
-  background-color: #064e3b;
-  color: white;
 }
 
 /* User Info Section */
@@ -109,6 +63,8 @@
   gap: 20px; /* Space between profile and logout link */
   font-size: 14px;
   color: white;
+  flex-direction: row;
+  margin-top: 0;
 }
 
 /* Profile Container */
@@ -146,5 +102,136 @@
 
 .logout-link:hover {
   background-color: #0e9e6e; /* Darker green on hover */
+}
+
+/* Yellow bar */
+.yellow-bar {
+  background-color: #facc15; /* Yellow-400 */
+  height: 10px;
+}
+
+/* Navigation */
+.nav-bar {
+  background-color: #fef3c7;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  border-bottom: 1px solid #ddd;
+  z-index: 1; /* Lower stacking order */
+}
+
+.nav-bar button {
+  background-color: #047857;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nav-bar button:hover {
+  background-color: #065f46;
+}
+
+/* Main content area */
+.main-section {
+  flex: 1; /* Makes the main section take up the remaining space */
+  padding: 1rem;
+  background-color: #fff;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #064e3b;
+  color: white;
+}
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 700px) {
+  .app-container {
+    padding: 0;
+    min-width: 100vw;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 8px;
+    max-height: none;
+  }
+
+  .logo-container {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  .logo {
+    font-size: 2.2rem;
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  .masjid-image {
+    width: 40px;
+    margin: 0;
+  }
+
+  .vertical-strip {
+    display: none;
+  }
+
+  .user-info {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    margin-top: 0 !important;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .profile-container {
+    gap: 6px;
+  }
+
+  .profile-picture {
+    width: 32px;
+    height: 32px;
+  }
+
+  .user-name {
+    font-size: 1rem;
+  }
+
+  .nav-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 6px;
+  }
+
+  .nav-bar button {
+    width: 100%;
+    font-size: 1rem;
+    padding: 8px 0;
+  }
+
+  .main-section {
+    padding: 0.5rem;
+    font-size: 0.98rem;
+  }
+
+  .footer {
+    font-size: 0.95rem;
+    padding: 0.5rem;
+  }
 }
 

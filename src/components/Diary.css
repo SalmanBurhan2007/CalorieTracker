@@ -278,3 +278,73 @@
   font-size: 14px;
   color: #555;
 }
+
+/* Responsive adjustments for mobile devices */
+@media (max-width: 700px) {
+  .diary-container {
+    padding: 6px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 8px;
+    font-size: 1rem;
+  }
+
+  .yellow-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 10px;
+    font-size: 0.98rem;
+    gap: 6px;
+  }
+
+  .main-diary {
+    flex-direction: column;
+    padding: 10px 0;
+    gap: 12px;
+  }
+
+  .progress-section,
+  .notes-section {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.98rem;
+    margin-bottom: 12px;
+  }
+
+  .chart-placeholder img {
+    height: 120px;
+  }
+
+  .food-log {
+    margin: 10px 0;
+    padding: 12px;
+    font-size: 0.98rem;
+  }
+
+  .add-note input {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .add-note button {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .footer {
+    font-size: 0.95rem;
+    padding: 8px;
+  }
+
+  .date-controls strong {
+    font-size: 14px;
+    padding: 4px 10px;
+  }
+
+  .progress-header h2 {
+    font-size: 1.1rem;
+  }
+}
