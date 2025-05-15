@@ -65,6 +65,11 @@ const LogFood = ({ addFoodToDiary }) => {
   const handleAdd = async (food) => {
     if (addFoodToDiary) addFoodToDiary(food);
 
+    // Extract macros (protein, fat, carbs) from the food object
+    const protein = food.full_nutrients?.find(n => n.attr_id === 203)?.value || 0; // Protein (attr_id: 203)
+    const fat = food.full_nutrients?.find(n => n.attr_id === 204)?.value || 0;    // Fat (attr_id: 204)
+    const carbs = food.full_nutrients?.find(n => n.attr_id === 205)?.value || 0;  // Carbs (attr_id: 205)
+
     // Add to Firestore for the user
     try {
       const auth = getAuth();
@@ -77,6 +82,9 @@ const LogFood = ({ addFoodToDiary }) => {
         collection(db, 'users', user.uid, 'foods'),
         {
           ...food,
+          protein: Math.round(protein), // Add protein to Firestore
+          fat: Math.round(fat),         // Add fat to Firestore
+          carbs: Math.round(carbs),     // Add carbs to Firestore
           timestamp: serverTimestamp()
         }
       );
