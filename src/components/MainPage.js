@@ -4,19 +4,17 @@ import "./MainPage.css";
 function MainPage({ loggedFoods = [] }) {
   const baseGoal = 2000;
 
-  // Calculate total calories from logged foods
-  const foodCalories = loggedFoods.reduce((sum, food) => {
-    if (food.nf_calories !== undefined && !isNaN(food.nf_calories)) {
-      return sum + Math.round(food.nf_calories);
-    }
-    return sum;
+  // Sum calories from all logged foods for the day
+  const foodCalories = loggedFoods.reduce((total, food) => {
+    // Assume each food item has a 'calories' property
+    return total + (food.calories || 0);
   }, 0);
 
   const remainingCalories = baseGoal - foodCalories;
 
   return (
     <div className="main-page">
-      <h2 className="date-title">July 19, 2025</h2>
+      <h2 className="date-title">{new Date().toDateString()}</h2>
       <h2 className="streak-title">DAY <br />STREAK</h2>
       <div className="cards">
         <div className="card">
