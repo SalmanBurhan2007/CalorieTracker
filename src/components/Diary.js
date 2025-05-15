@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Diary.css';
 
 function Diary({ loggedFoods = [] }) {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState(""); // State for the new note input
   const [currentDate, setCurrentDate] = useState(new Date()); // State to manage the current date
-  const [caloriesConsumed, setCaloriesConsumed] = useState(700); // Example: Calories consumed
+  const [caloriesConsumed, setCaloriesConsumed] = useState(0); // State for calories consumed
   const dailyGoal = 2000; // Example: Daily calorie goal
 
   // Function to handle adding a new note
@@ -49,6 +49,17 @@ function Diary({ loggedFoods = [] }) {
       year: 'numeric', // e.g., "2025"
     });
   };
+
+  // Update caloriesConsumed whenever loggedFoods changes
+  useEffect(() => {
+    const totalCalories = loggedFoods.reduce((sum, food) => {
+      if (food.nf_calories !== undefined && !isNaN(food.nf_calories)) {
+        return sum + Math.round(food.nf_calories);
+      }
+      return sum;
+    }, 0);
+    setCaloriesConsumed(totalCalories);
+  }, [loggedFoods]);
 
   // Calculate progress percentage
   const progressPercentage = Math.min((caloriesConsumed / dailyGoal) * 100, 100);

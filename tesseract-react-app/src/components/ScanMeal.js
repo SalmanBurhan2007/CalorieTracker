@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Tesseract from "tesseract.js";
-import "./ScanMeal.css";
 
 function ScanMeal() {
   const [image, setImage] = useState(null);
@@ -10,59 +9,37 @@ function ScanMeal() {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        alert("Please upload a valid image file.");
-        return;
-      }
       setImage(URL.createObjectURL(file));
     }
   };
 
   const handleScan = () => {
-    if (!image) {
-      alert("Please upload an image before scanning.");
-      return;
-    }
+    if (!image) return;
     setLoading(true);
-    console.log("Starting OCR process...");
     Tesseract.recognize(image, "eng", {
-      logger: (info) => console.log(info), // Logs progress
+      logger: (info) => console.log(info),
     })
       .then(({ data: { text } }) => {
-        console.log("OCR completed successfully.");
         setText(text);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error scanning image:", error);
-        alert("An error occurred while scanning the image. Please try again.");
         setLoading(false);
       });
   };
 
   return (
-    <div className="scan-meal-container">
+    <div>
       <h2>Scan Meal</h2>
       <p>Use your camera or upload an image of your food.</p>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        style={{ marginBottom: "10px" }}
-      />
-      {image && (
-        <img
-          src={image}
-          alt="Uploaded"
-          style={{ maxWidth: "100%", marginTop: "10px", borderRadius: "8px" }}
-        />
-      )}
-      <button onClick={handleScan} disabled={loading || !image}>
+      <input type="file" accept="image/*" onChange={handleImageUpload} />
+      {image && <img src={image} alt="Uploaded" style={{ maxWidth: "100%", marginTop: "10px" }} />}
+      <button onClick={handleScan} disabled={loading}>
         {loading ? "Scanning..." : "Scan Image"}
       </button>
       {text && (
-        <div className="scanned-text">
+        <div>
           <h3>Scanned Text:</h3>
           <p>{text}</p>
         </div>
