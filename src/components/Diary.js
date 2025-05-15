@@ -154,13 +154,7 @@ function Diary() {
               {notes.map((note, index) => (
                 <li key={index}>
                   <strong>{note}</strong>
-                  <button
-                    onClick={() => deleteNote(index)}
-                    className="delete-btn"
-                    style={{ background: 'red', color: 'white' }}
-                  >
-                    X
-                  </button>
+                  <button onClick={() => deleteNote(index)} className="delete-btn">X</button>
                 </li>
               ))}
             </ul>
@@ -202,7 +196,7 @@ function Diary() {
               <button
                 className="delete-btn"
                 onClick={() => handleDeleteFood(food.id)}
-                style={{ marginLeft: 8, background: 'red', color: 'white' }}
+                style={{ marginLeft: 8, backgoundColor: "red", color: "white" }}
               >
                 X
               </button>
