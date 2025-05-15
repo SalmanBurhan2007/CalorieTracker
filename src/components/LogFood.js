@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import './LogFood.css';
+import { db } from './firebase'; // adjust path if needed
+import { getAuth } from 'firebase/auth';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const APP_ID = "b6075a03"; // Replace with your Nutritionix Application ID
-const API_KEY = "4ccff94382079bd6a8397289b54db3ac"; // Replace with your Nutritionix API Key
+const APP_ID = "3d645e62"; // Replace with your Nutritionix Application ID
+const API_KEY = "68ea71e992fa9881ade38300823db61d"; // Replace with your Nutritionix API Key
 
 const LogFood = ({ addFoodToDiary }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,8 +62,28 @@ const LogFood = ({ addFoodToDiary }) => {
     setLoading(false);
   };
 
-  const handleAdd = (food) => {
+  const handleAdd = async (food) => {
     if (addFoodToDiary) addFoodToDiary(food);
+
+    // Add to Firestore for the user
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) {
+        alert('You must be logged in to add food.');
+        return;
+      }
+      await addDoc(
+        collection(db, 'users', user.uid, 'foods'),
+        {
+          ...food,
+          timestamp: serverTimestamp()
+        }
+      );
+    } catch (error) {
+      console.error('Error adding food to Firestore:', error);
+      alert(error);
+    }
   };
 
   const getCalories = (food) => {
