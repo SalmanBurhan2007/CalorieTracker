@@ -11,6 +11,8 @@ const LogFood = ({ addFoodToDiary }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedFood, setSelectedFood] = useState(null); // State for popup
+  const [servingSize, setServingSize] = useState(1); // State for serving size
 
   const fetchNutritionForCommon = async (food) => {
     try {
@@ -63,12 +65,18 @@ const LogFood = ({ addFoodToDiary }) => {
   };
 
   const handleAdd = async (food) => {
-    if (addFoodToDiary) addFoodToDiary(food);
+    setSelectedFood(food); // Open popup with selected food
+    setServingSize(1); // Reset serving size to 1
+  };
 
-    // Extract macros (protein, fat, carbs) from the food object
-    const protein = food.full_nutrients?.find(n => n.attr_id === 203)?.value || 0; // Protein (attr_id: 203)
-    const fat = food.full_nutrients?.find(n => n.attr_id === 204)?.value || 0;    // Fat (attr_id: 204)
-    const carbs = food.full_nutrients?.find(n => n.attr_id === 205)?.value || 0;  // Carbs (attr_id: 205)
+  const confirmAddFood = async () => {
+    if (addFoodToDiary) addFoodToDiary(selectedFood);
+
+    // Adjust macros based on the serving size
+    const adjustedCalories = Math.round((selectedFood.nf_calories || 0) * servingSize);
+    const protein = Math.round((selectedFood.full_nutrients?.find(n => n.attr_id === 203)?.value || 0) * servingSize); // Protein (attr_id: 203)
+    const fat = Math.round((selectedFood.full_nutrients?.find(n => n.attr_id === 204)?.value || 0) * servingSize);    // Fat (attr_id: 204)
+    const carbs = Math.round((selectedFood.full_nutrients?.find(n => n.attr_id === 205)?.value || 0) * servingSize);  // Carbs (attr_id: 205)
 
     // Add to Firestore for the user
     try {
@@ -81,13 +89,16 @@ const LogFood = ({ addFoodToDiary }) => {
       await addDoc(
         collection(db, 'users', user.uid, 'foods'),
         {
-          ...food,
-          protein: Math.round(protein), // Add protein to Firestore
-          fat: Math.round(fat),         // Add fat to Firestore
-          carbs: Math.round(carbs),     // Add carbs to Firestore
+          ...selectedFood,
+          nf_calories: adjustedCalories, // Adjusted calories
+          protein, // Adjusted protein
+          fat,     // Adjusted fat
+          carbs,   // Adjusted carbs
+          serving_size: servingSize, // Store the serving size
           timestamp: serverTimestamp()
         }
       );
+      setSelectedFood(null); // Close popup after adding
     } catch (error) {
       console.error('Error adding food to Firestore:', error);
       alert(error);
@@ -95,11 +106,7 @@ const LogFood = ({ addFoodToDiary }) => {
   };
 
   const getCalories = (food) => {
-    if (food.nf_calories) return Math.round(food.nf_calories);
-    if (food.full_nutrients) {
-      const calObj = food.full_nutrients.find(n => n.attr_id === 208);
-      if (calObj) return Math.round(calObj.value);
-    }
+    if (food.nf_calories) return Math.round(food.nf_calories * servingSize);
     return "N/A";
   };
 
@@ -149,6 +156,34 @@ const LogFood = ({ addFoodToDiary }) => {
           ))
         )}
       </div>
+
+      {selectedFood && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h3>Log Food</h3>
+            <p>Are you sure you want to log this food?</p>
+            <p>
+              <strong>{selectedFood.food_name || selectedFood.name}</strong>
+            </p>
+            <p>Calories: {getCalories(selectedFood)}</p>
+            <div>
+              <label htmlFor="serving-size">Serving Size:</label>
+              <input
+                id="serving-size"
+                type="number"
+                min="0.1"
+                step="0.1"
+                value={servingSize}
+                onChange={(e) => setServingSize(parseFloat(e.target.value) || 1)}
+              />
+            </div>
+            <div className="popup-actions">
+              <button onClick={() => setSelectedFood(null)}>Cancel</button>
+              <button onClick={confirmAddFood}>Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
