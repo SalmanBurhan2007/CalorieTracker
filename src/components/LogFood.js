@@ -59,12 +59,80 @@ const LogFood = ({ addFoodToDiary }) => {
       commonFoods.map(fetchNutritionForCommon)
     );
 
-    const results = [...enrichedCommonFoods, ...brandedFoods];
+    // --- HARAM INGREDIENT CHECK ---
+    // List of common haram ingredients (expand as needed)
+    const haramIngredients = [
+      "gelatin",
+      "marshmallow",
+      "rice krispies",
+      "lard",
+      "pork",
+      "bacon",
+      "ham",
+      "rum",
+      "beer",
+      "wine",
+      "ethanol",
+      "vanilla extract",
+      "carmine",
+      "cochineal",
+      "pepsin",
+      "rennet",
+      "shortening (animal)",
+      "animal fat",
+      "emulsifier (animal)",
+      "enzymes (porcine)",
+      "lipase (porcine)",
+      "monoglycerides (animal)",
+      "diglycerides (animal)"
+    ];
+
+    const isHaram = (food) => {
+      const name = (food.food_name || "").toLowerCase();
+      const brand = (food.brand_name || "").toLowerCase();
+      // Check in food name or brand name
+      if (haramIngredients.some(ingredient =>
+        name.includes(ingredient) || brand.includes(ingredient)
+      )) {
+        console.log(`Warning: ${food.food_name || food.name} contains haram ingredients.`);
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    const filteredCommonFoods = enrichedCommonFoods.filter(food => !isHaram(food));
+    const filteredBrandedFoods = brandedFoods.filter(food => !isHaram(food));
+
+    const results = [...filteredCommonFoods, ...filteredBrandedFoods];
     setFoods(results);
     setLoading(false);
   };
 
   const handleAdd = async (food) => {
+    const companies = ["tim hortons", "starbucks", "nestle", "coca cola", "pepsi", "kraft", "mondelez", "unilever", "procter & gamble", "general mills", "campbell's soup", "7up", "mcdonald's", "burger king", "kfc", "pizza hut", "domino's pizza", "sodastream"];
+
+    // Use word boundary regex for robust matching
+    const normalize = str => str.replace(/[^\w\s]/gi, '').toLowerCase();
+    const foodBrand = food.brand_name ? normalize(food.brand_name) : "";
+    const foodName = food.food_name ? normalize(food.food_name) : "";
+
+    const isBoycotted = companies.some(company => {
+      const normalizedCompany = normalize(company);
+      console.log("Checking company:", normalizedCompany);
+      const regex = new RegExp(`\\b${normalizedCompany}\\b`, 'i');
+      return regex.test(foodBrand) || regex.test(foodName);
+    });
+
+    if (isBoycotted) {
+      alert("Warning: This food is produced by a company on the boycott list.");
+      console.log("Boycotted food detected:", foodBrand, foodName);
+    } else {
+      console.log("Food is not on the boycott list:", foodBrand, foodName);
+    }
+
+    
+
     setSelectedFood(food); // Open popup with selected food
     setServingSize("1"); // Reset serving size to "1"
   };
@@ -128,14 +196,6 @@ const LogFood = ({ addFoodToDiary }) => {
   // Helper to get macro value per serving
   const getMacro = (food, attrId) => {
     return Math.round((food.full_nutrients?.find(n => n.attr_id === attrId)?.value || 0) * (parseFloat(servingSize) || 0));
-  };
-
-  // Helper to get serving weight in grams
-  const getServingWeight = (food) => {
-    if (food.serving_weight_grams) {
-      return `${food.serving_weight_grams}g`;
-    }
-    return "";
   };
 
   return (
