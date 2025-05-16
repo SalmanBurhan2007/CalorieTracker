@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Diary.css';
 import { db } from './firebase'; // adjust path if needed
 import { getAuth } from 'firebase/auth';
-import { collection, query, where, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 
 function Diary() {
   const [notes, setNotes] = useState([]);
@@ -31,9 +31,11 @@ function Diary() {
     const foodsRef = collection(db, 'users', user.uid, 'foods');
     const q = query(
       foodsRef,
-      where('timestamp', '>=', start),
-      where('timestamp', '<=', end)
+      where('timestamp', '>=', Timestamp.fromDate(start)),
+      where('timestamp', '<=', Timestamp.fromDate(end))
     );
+
+    console.log(foodsRef);
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const foods = [];
