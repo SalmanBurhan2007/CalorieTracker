@@ -144,8 +144,22 @@ function MainPage() {
 
   return (
     <div className="main-page">
-      <h2 className="date-title">{new Date().toDateString()}</h2>
-      <h2 className="streak-title">DAY <br />STREAK<br /><span>{streak}</span></h2>
+      <div className="main-header">
+        <div className="date-controls">
+          <h2 className="date-title">
+            {new Date().toLocaleDateString(undefined, {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric"
+            })}
+          </h2>
+        </div>
+        <div className="streak-card">
+          <span className="streak-label">DAY STREAK</span>
+          <span className="streak-value">{streak}</span>
+        </div>
+      </div>
       <div className="cards">
         <div className="card">
           <h3>Calories</h3>
