@@ -19,7 +19,7 @@ const ISLAMIC_QUOTES = [
 "Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience. (Quran 103:3)",
 "And seek help through patience and prayer, and indeed, it is difficult except for the humbly submissive [to Allah ]. (Quran 2:45)",
 "The patient, the true, the obedient, those who spend [in the way of Allah ], and those who seek forgiveness before dawn. (Quran 3:17)",
-];
+]; // all daily islamic quotes
 
 function MainPage({ calorieGoal }) {
   const baseGoal = calorieGoal ? Number(calorieGoal) : 2000; // fallback to 2000 if not set
@@ -41,7 +41,7 @@ function MainPage({ calorieGoal }) {
     const auth = getAuth();
     const user = auth.currentUser;
 
-    if (!user) {
+    if (!user) { // if user is not authenticated, set initial values
       setCaloriesConsumed(0);
       setProteinConsumed(0);
       setFatConsumed(0);

@@ -11,7 +11,7 @@ function Login({ onLogin }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password); // Firebase SDK function
        // Clear error on success
       if (onLogin) {
         setError("");

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Diary.css';
-import { db } from './firebase'; // adjust path if needed
+import { db } from './firebase';
 import { getAuth } from 'firebase/auth';
 import { collection, query, where, onSnapshot, deleteDoc, doc, addDoc, Timestamp } from 'firebase/firestore';
 

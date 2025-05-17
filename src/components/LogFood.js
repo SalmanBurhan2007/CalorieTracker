@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './LogFood.css';
-import { db } from './firebase'; // adjust path if needed
+import { db } from './firebase';
 import { getAuth } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const APP_ID = "894eee99"; // Replace with your Nutritionix Application ID
-const API_KEY = "e882b07c8a13502616718f881f6ae51e"; // Replace with your Nutritionix API Key
+const APP_ID = "894eee99";
+const API_KEY = "e882b07c8a13502616718f881f6ae51e";
 
 const LogFood = ({ addFoodToDiary }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,7 +16,7 @@ const LogFood = ({ addFoodToDiary }) => {
 
   const fetchNutritionForCommon = async (food) => {
     try {
-      const res = await fetch("https://trackapi.nutritionix.com/v2/natural/nutrients", {
+      const res = await fetch("https://trackapi.nutritionix.com/v2/natural/nutrients", { // Get macros, calories for specific food
         method: "POST",
         headers: {
           "x-app-id": APP_ID,
@@ -34,8 +34,6 @@ const LogFood = ({ addFoodToDiary }) => {
     }
     return food;
   };
-
-  const meat = ["lamb", "beef", "chicken", "turkey", "duck", "goose", "rabbit", "goat"];
 
   const handleSearch = async () => {
     if (!searchTerm) return;
@@ -62,7 +60,7 @@ const LogFood = ({ addFoodToDiary }) => {
     );
 
     // --- HARAM INGREDIENT CHECK ---
-    // List of common haram ingredients (expand as needed)
+    // List of common haram ingredients
     const haramIngredients = [
       "gelatin",
       "marshmallow",
@@ -126,7 +124,8 @@ const LogFood = ({ addFoodToDiary }) => {
   };
 
   const handleAdd = async (food) => {
-    const companies = ["tim hortons", "starbucks", "nestle", "coca cola", "pepsi", "kraft", "mondelez", "unilever", "procter & gamble", "general mills", "campbell's soup", "7up", "mcdonald's", "burger king", "kfc", "pizza hut", "domino's pizza", "sodastream"];
+    const companies = ["tim hortons", "starbucks", "nestle", "coca cola", "pepsi", "kraft", "mondelez", "unilever", "procter & gamble", "general mills", "campbell's soup", "7up", "mcdonald's", "burger king", "kfc", "pizza hut", "domino's pizza", "sodastream"]; // Boycotted companies
+    const meat = ["lamb", "beef", "chicken", "turkey", "duck", "goose", "rabbit", "goat"]; // All meats which MAY be haram
 
     // Use word boundary regex for robust matching
     const normalize = str => str.replace(/[^\w\s]/gi, '').toLowerCase();

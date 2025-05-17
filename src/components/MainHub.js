@@ -9,7 +9,7 @@ import Login from "./Login";
 import "./MainHub.css";
 import { getAuth } from "firebase/auth";
 
-// SettingsPopup component
+// SettingsPopup component - to change user details, calorie goal
 function SettingsPopup({ onClose, onLogout, onEditProfile, onCalorieGoal }) {
   return (
     <div className="settings-popup-overlay">
@@ -32,7 +32,7 @@ function SettingsPopup({ onClose, onLogout, onEditProfile, onCalorieGoal }) {
   );
 }
 
-// CalorieGoalPopup component
+// CalorieGoalPopup component - within settings popup
 function CalorieGoalPopup({ onClose, userId, onSave }) {
   const [unit, setUnit] = useState("metric"); // "metric" or "us"
   const [weight, setWeight] = useState("");
@@ -79,7 +79,7 @@ function CalorieGoalPopup({ onClose, userId, onSave }) {
       doc(db, "users", userId),
       {
         calorieProfile: {
-          calorieGoal,
+          calorieGoal, // Save to Firestore
         },
       },
       { merge: true }
@@ -240,6 +240,8 @@ function CalorieGoalPopup({ onClose, userId, onSave }) {
   );
 }
 
+
+// Changes username
 function EditProfilePopup({ onClose, currentName, onSave }) {
   const [name, setName] = useState(currentName || "");
   const [saving, setSaving] = useState(false);
@@ -308,7 +310,7 @@ function MainHub() {
     }
   };
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn) { // If the user is not yet logged in...
     return (
       <Login
         onLogin={async () => {
@@ -328,7 +330,6 @@ function MainHub() {
     );
   }
 
-  // ADD THIS CHECK:
   if (!user) {
     // Show a spinner while loading user data
     return (

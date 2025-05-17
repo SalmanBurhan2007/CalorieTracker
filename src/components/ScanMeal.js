@@ -5,10 +5,10 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 
 const APP_ID = "894eee99";
-const API_KEY = "e882b07c8a13502616718f881f6ae51e";
+const API_KEY = "e882b07c8a13502616718f881f6ae51e"; // API keys for Nutritionx
 
 function ScanMeal({ addFoodToDiary }) {
-  const videoRef = useRef(null);
+  const videoRef = useRef(null); // creates DOM element - allows React to manipulate the feed
   const [selectedFood, setSelectedFood] = useState(null);
   const [servingSize, setServingSize] = useState("1");
   
@@ -86,7 +86,7 @@ function ScanMeal({ addFoodToDiary }) {
 
   const normalize = str =>
     (str || "")
-      .replace(/\([^)]*\)/g, '') // Remove anything in brackets ()
+      .replace(/\([^)]*\)/g, '') // Remove anything in brackets () - foods may contain unfamiliar symbols from Nutritionix
       .replace(/[^\w\s]/gi, '')  // Remove non-word characters
       .toLowerCase()
       .trim();
@@ -100,17 +100,17 @@ function ScanMeal({ addFoodToDiary }) {
       const normalizedCompany = normalize(company);
       const regex = new RegExp(`\\b${normalizedCompany}\\b`, 'i');
       return regex.test(foodBrand) || regex.test(foodName);
-    });
+    }); // Check if the food brand or name matches any company in the boycott list
 
     if (isBoycotted) {
-      alert("Warning: This food is produced by a company on the boycott list.");
+      alert("Warning: This food is produced by a company on the boycott list."); // Alert user if so
     }
 
     // Check in food name or brand name
     if (food.brand_name) {
-      if (food.nf_ingredient_statement) {
+      if (food.nf_ingredient_statement) { // Check if ingredient statement exists in Nutritionix
         const ingredientsStr = food.nf_ingredient_statement.toLowerCase();
-        const foundHaram = haramIngredients.find(haram =>
+        const foundHaram = haramIngredients.find(haram => // Cross reference with haram array
           ingredientsStr.includes(haram));
         const foundMeat = meat.find(meat =>
           ingredientsStr.includes(meat)
@@ -128,7 +128,7 @@ function ScanMeal({ addFoodToDiary }) {
       }
     }
 
-    setSelectedFood(food);
+    setSelectedFood(food); // Pass selected food to appropriate function
     setServingSize("1");
   };
 
@@ -138,7 +138,8 @@ function ScanMeal({ addFoodToDiary }) {
         alert("Please enter a valid serving size.");
         return;
       }
-      if (addFoodToDiary) addFoodToDiary(selectedFood);
+      
+      addFoodToDiary(selectedFood); // Add food to diary, firestore will handle the rest
   
       // Adjust macros based on the serving size
       const adjustedCalories = Math.round((selectedFood.nf_calories || 0) * servingNum);
@@ -154,7 +155,7 @@ function ScanMeal({ addFoodToDiary }) {
           alert('You must be logged in to add food.');
           return;
         }
-        await addDoc(
+        await addDoc( // Add food to Firestore
           collection(db, 'users', user.uid, 'foods'),
           {
             ...selectedFood,
@@ -173,7 +174,7 @@ function ScanMeal({ addFoodToDiary }) {
       }
     };
 
-  useEffect(() => {
+  useEffect(() => { // useEffect to handle camera access and QR code scanning, real-world implementation
     let codeReader;
     let stream;
 
@@ -182,10 +183,10 @@ function ScanMeal({ addFoodToDiary }) {
         stream = await navigator.mediaDevices.getUserMedia({ video: true });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          codeReader = new BrowserMultiFormatReader();
-          codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
+          codeReader = new BrowserMultiFormatReader(); // using @Zxing/library
+          codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => { // get barcode from camera
             if (result) {
-              fetch(`https://trackapi.nutritionix.com/v2/search/item?upc=${result.getText()}`, {
+              fetch(`https://trackapi.nutritionix.com/v2/search/item?upc=${result.getText()}`, { // Search Nutritionix using UPC from barcode
                 headers: {
                   "x-app-id": APP_ID,
                   "x-app-key": API_KEY,
@@ -211,7 +212,7 @@ function ScanMeal({ addFoodToDiary }) {
         console.error("Camera access denied:", err);
       }
     }
-    enableCamera();
+    enableCamera(); // start camera access
 
     return () => {
       if (codeReader) codeReader.reset();
@@ -219,7 +220,7 @@ function ScanMeal({ addFoodToDiary }) {
     };
   }, []);
 
-  return (
+  return ( // html for webpage
     <div>
       <h2>Scan Meal</h2>
       <video
