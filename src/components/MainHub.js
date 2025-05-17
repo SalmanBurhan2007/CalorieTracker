@@ -296,13 +296,13 @@ function MainHub() {
   const renderPage = () => {
     switch (activePage) {
       case "diary":
-        return <Diary loggedFoods={loggedFoods} />;
+        return <Diary loggedFoods={loggedFoods} dailyGoal={user.calorieProfile?.calorieGoal || 2000} />;
       case "log":
         return <LogFood addFoodToDiary={addFoodToDiary} />;
       case "scan":
         return <ScanMeal />;
       default:
-        return <MainPage />;
+        return <MainPage calorieGoal={user.calorieProfile?.calorieGoal} />;
     }
   };
 

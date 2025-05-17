@@ -21,8 +21,8 @@ const ISLAMIC_QUOTES = [
 "The patient, the true, the obedient, those who spend [in the way of Allah ], and those who seek forgiveness before dawn. (Quran 3:17)",
 ];
 
-function MainPage() {
-  const baseGoal = 2000;
+function MainPage({ calorieGoal }) {
+  const baseGoal = calorieGoal ? Number(calorieGoal) : 2000; // fallback to 2000 if not set
   const [caloriesConsumed, setCaloriesConsumed] = useState(0);
   const [proteinConsumed, setProteinConsumed] = useState(0);
   const [fatConsumed, setFatConsumed] = useState(0);

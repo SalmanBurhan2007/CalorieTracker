@@ -4,13 +4,12 @@ import { db } from './firebase'; // adjust path if needed
 import { getAuth } from 'firebase/auth';
 import { collection, query, where, onSnapshot, deleteDoc, doc, addDoc, Timestamp } from 'firebase/firestore';
 
-function Diary() {
+function Diary({ dailyGoal = 2000 }) { // Accept dailyGoal as a prop, fallback to 2000
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [caloriesConsumed, setCaloriesConsumed] = useState(0);
   const [foodLog, setFoodLog] = useState([]);
-  const dailyGoal = 2000;
 
   useEffect(() => {
     const auth = getAuth();
