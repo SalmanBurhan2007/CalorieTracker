@@ -169,12 +169,32 @@
   padding: 10px;
   border-radius: 8px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .food-item strong {
   color: #064e3b;
+  word-break: break-word;
+  max-width: 40vw;
+  flex: 1 1 40%;
+}
+
+.food-item p {
+  margin: 0;
+  color: #333;
+  font-size: 0.98rem;
+  flex: 1 1 40%;
+  text-align: center;           /* Center the serving size/details */
+  white-space: nowrap;
+}
+
+.food-item .delete-btn {
+  margin-left: 12px;
+  align-self: flex-start;
+  flex-shrink: 0;
 }
 
 .total-cal {
