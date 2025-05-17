@@ -152,6 +152,116 @@
   color: white;
 }
 
+/* Settings Popup Styles */
+.settings-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.settings-popup {
+  background: #fff;
+  padding: 2rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.settings-popup h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.4rem;
+  color: #064e3b;
+  text-align: center;
+}
+
+.settings-btn {
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: #047857;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.settings-btn.logout {
+  background: #dc2626;
+}
+
+.settings-btn.close {
+  background: #facc15;
+  color: #064e3b;
+}
+
+.settings-btn:hover {
+  opacity: 0.9;
+}
+
+.settings-link {
+  background: #1eaf7f;
+  color: white;
+  border: none;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.settings-link:hover {
+  background: #0e9e6e;
+}
+
+.edit-profile-popup {
+  background: #fff;
+  padding: 2.5rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+  min-width: 340px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: stretch;
+}
+
+.edit-profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.edit-profile-picture {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #047857;
+  margin-bottom: 0.5rem;
+}
+
+.edit-profile-input {
+  width: 200px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
 /* Responsive adjustments for mobile devices */
 @media (max-width: 700px) {
   .app-container {

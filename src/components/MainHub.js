@@ -1,15 +1,81 @@
 import React, { useState } from "react";
+import { db } from "./firebase";
+import { doc, setDoc } from "firebase/firestore";
 import MainPage from "./MainPage";
 import Diary from "./Diary";
 import LogFood from "./LogFood";
 import ScanMeal from "./ScanMeal";
-import Login from "./Login"; // Make sure you have this component
+import Login from "./Login";
 import "./MainHub.css";
+
+// SettingsPopup component
+function SettingsPopup({ onClose, onLogout, onEditProfile }) {
+  return (
+    <div className="settings-popup-overlay">
+      <div className="settings-popup">
+        <h2>Settings</h2>
+        <button className="settings-btn" onClick={onEditProfile}>
+          Edit Profile
+        </button>
+        <button className="settings-btn logout" onClick={onLogout}>
+          Logout
+        </button>
+        <button className="settings-btn close" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function EditProfilePopup({ onClose, userId, currentName, onSave }) {
+  const [name, setName] = useState(currentName || "");
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await setDoc(doc(db, "users", userId), { name }, { merge: true });
+    setSaving(false);
+    onSave({ name });
+    onClose();
+  };
+
+  return (
+    <div className="settings-popup-overlay">
+      <div className="edit-profile-popup">
+        <h2>Edit Profile</h2>
+        <div className="edit-profile-content">
+          <label>
+            <span>Name</span>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              className="edit-profile-input"
+            />
+          </label>
+        </div>
+        <button className="settings-btn" onClick={handleSave} disabled={saving}>
+          {saving ? "Saving..." : "Save"}
+        </button>
+        <button className="settings-btn close" onClick={onClose}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function MainHub() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activePage, setActivePage] = useState("main");
   const [loggedFoods, setLoggedFoods] = useState([]);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [user, setUser] = useState({
+    id: "user123", // Replace with real user ID from auth
+    name: "User"
+  });
 
   const addFoodToDiary = (food) => {
     setLoggedFoods((prev) => [...prev, food]);
@@ -41,20 +107,14 @@ function MainHub() {
         </div>
         <div className="user-info">
           <div className="profile-container">
-            <img
-              src="/placeholder-profile.png"
-              alt="Profile"
-              className="profile-picture"
-            />
-            <span className="user-name">Salaam, User!</span>
+            <span className="user-name">Salaam, {user.name}!</span>
           </div>
-          <a
-            href="#"
-            className="logout-link"
-            onClick={() => setIsLoggedIn(false)}
+          <button
+            className="settings-link"
+            onClick={() => setShowSettings(true)}
           >
-            Logout
-          </a>
+            Settings
+          </button>
         </div>
       </header>
 
@@ -68,6 +128,29 @@ function MainHub() {
       <main className="main-section">{renderPage()}</main>
 
       <footer className="footer">© 2025 UmmahWell Inc.</footer>
+
+      {showSettings && (
+        <SettingsPopup
+          onClose={() => setShowSettings(false)}
+          onLogout={() => {
+            setIsLoggedIn(false);
+            setShowSettings(false);
+          }}
+          onEditProfile={() => {
+            setShowSettings(false);
+            setShowEditProfile(true);
+          }}
+        />
+      )}
+
+      {showEditProfile && (
+        <EditProfilePopup
+          onClose={() => setShowEditProfile(false)}
+          userId={user.id}
+          currentName={user.name}
+          onSave={updated => setUser(u => ({ ...u, ...updated }))}
+        />
+      )}
     </div>
   );
 }
