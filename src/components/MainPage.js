@@ -4,6 +4,23 @@ import { db } from "./firebase"; // Adjust the path if needed
 import { getAuth } from "firebase/auth";
 import { collection, query, where, onSnapshot, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
+const ISLAMIC_QUOTES = [
+"So remember Me; I will remember you. And be grateful to Me and do not deny Me. (Quran 2:152)",
+"And He found you lost and guided [you], (Quran 93:7)",
+"Indeed, with hardship [will be] ease. (Quran 94:6)",
+"And do good; indeed, Allāh loves the doers of good.(Quran 2:195)",
+"And He is the Forgiving, the Loving, (Quran 85:14)",
+"Do not despair of the mercy of Allāh. Indeed, Allāh forgives all sins. Indeed, it is He who is the Forgiving, the Merciful. (Quran 39:53)",
+"And Allāh is the best of planners. (Quran 8:30)",
+"And He is with you wherever you are. (Quran 57:4)",
+"Indeed, He is ever Knowing and Competent.(Quran 35:44)",
+"Allāh does not charge a soul except [with that within] its capacity. (Quran 2:286)",
+"Except for those who believe and do righteous deeds. For them is a reward uninterrupted. (Quran 84:25)",
+"Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience. (Quran 103:3)",
+"And seek help through patience and prayer, and indeed, it is difficult except for the humbly submissive [to Allah ]. (Quran 2:45)",
+"The patient, the true, the obedient, those who spend [in the way of Allah ], and those who seek forgiveness before dawn. (Quran 3:17)",
+];
+
 function MainPage() {
   const baseGoal = 2000;
   const [caloriesConsumed, setCaloriesConsumed] = useState(0);
@@ -11,6 +28,14 @@ function MainPage() {
   const [fatConsumed, setFatConsumed] = useState(0);
   const [carbsConsumed, setCarbsConsumed] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [quote, setQuote] = useState("");
+
+  useEffect(() => {
+    // Pick a random quote on mount
+    if (ISLAMIC_QUOTES.length > 0) {
+      setQuote(ISLAMIC_QUOTES[Math.floor(Math.random() * ISLAMIC_QUOTES.length)]);
+    }
+  }, []);
 
   useEffect(() => {
     const auth = getAuth();
@@ -204,7 +229,7 @@ function MainPage() {
       <div className="quote-section">
         <h4>Daily Islamic Quote</h4>
         <blockquote>
-          "The world is but a moment, so make it a moment of obedience."
+          {quote || "The world is but a moment, so make it a moment of obedience."}
         </blockquote>
       </div>
     </div>
