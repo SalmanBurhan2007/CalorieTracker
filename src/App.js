@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import MainHub from "./components/MainHub";
-import Login from "./components/Login"; // Make sure you have Login.js as shown earlier
-import { auth } from "./components/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import Login from "./components/Login";
+import { auth, db } from "./components/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -17,9 +18,21 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  // This function will be called by Login after successful login/signup
+  const handleAuth = async (authUser, isSignup = false) => {
+    // Fetch user profile from Firestore
+    const userDoc = await getDoc(doc(db, "users", authUser.uid));
+    if (userDoc.exists()) {
+      setUser({ ...authUser, ...userDoc.data() });
+    } else {
+      setUser(authUser); // fallback if no profile
+    }
+    // Optionally, you can handle isSignup here for calorie goal popup
+  };
+
   if (loading) return <div>Loading...</div>;
 
-  return user ? <MainHub /> : <Login onLogin={setUser} />;
+  return user ? <MainHub user={user} setUser={setUser} /> : <Login onLogin={handleAuth} />;
 }
 
 export default App;

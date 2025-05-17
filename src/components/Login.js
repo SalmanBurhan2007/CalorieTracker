@@ -15,7 +15,7 @@ function Login({ onLogin }) {
        // Clear error on success
       if (onLogin) {
         setError("");
-        onLogin(auth.currentUser); // Notify parent of successful login
+        onLogin(auth.currentUser, false); // Notify parent of successful login
       }
     } catch (err) {
       // Map Firebase error codes to user-friendly messages
@@ -41,7 +41,7 @@ function Login({ onLogin }) {
       await createUserWithEmailAndPassword(auth, email, password);
       if (onLogin) {
         setError("");
-        onLogin(auth.currentUser); // Notify parent of successful sign up
+        onLogin(auth.currentUser, true); // Notify parent of successful sign up
       }
     } catch (err) {
       let message = "Sign up failed. Please try again.";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import MainPage from "./MainPage";
 import Diary from "./Diary";
 import LogFood from "./LogFood";
@@ -289,10 +289,7 @@ function MainHub() {
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showCalorieGoal, setShowCalorieGoal] = useState(false);
   
-  const [user, setUser] = useState({
-    id: "user123", // Replace with real user ID from auth
-    name: "User"
-  });
+  const [user, setUser] = useState(null);
 
   const addFoodToDiary = (food) => {
     setLoggedFoods((prev) => [...prev, food]);
@@ -314,11 +311,45 @@ function MainHub() {
   if (!isLoggedIn) {
     return (
       <Login
-        onLogin={() => {
+        onLogin={async () => {
           setIsLoggedIn(true);
-          setShowCalorieGoal(true); // Show calorie goal popup immediately after login/signup
+          const auth = getAuth();
+          const authUser = auth.currentUser;
+          if (authUser) {
+            const userDoc = await getDoc(doc(db, "users", authUser.uid));
+            if (userDoc.exists()) {
+              setUser({ id: authUser.uid, ...userDoc.data() });
+            } else {
+              setUser({ id: authUser.uid, name: authUser.email || "User" });
+            }
+          }
         }}
       />
+    );
+  }
+
+  // ADD THIS CHECK:
+  if (!user) {
+    // Show a spinner while loading user data
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "60vh" }}>
+      <div className="spinner" style={{
+        width: "48px",
+        height: "48px",
+        border: "6px solid #eee",
+        borderTop: "6px solid #3498db",
+        borderRadius: "50%",
+        animation: "spin 1s linear infinite"
+      }} />
+      <style>
+        {`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        `}
+      </style>
+      </div>
     );
   }
 
