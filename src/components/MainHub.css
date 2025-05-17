@@ -262,6 +262,87 @@
   font-size: 1rem;
 }
 
+/* Calorie Goal Popup Styles */
+.calorie-goal-popup {
+  background: #fff;
+  padding: 2.5rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.18);
+  min-width: 340px;
+  max-width: 95vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: stretch;
+}
+
+.calorie-goal-popup h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.4rem;
+  color: #064e3b;
+  text-align: center;
+}
+
+.calorie-goal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.calorie-goal-content label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-weight: 500;
+  width: 100%;
+  gap: 0.3em;
+}
+
+.calorie-goal-input {
+  width: 200px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-top: 0.2em;
+}
+
+.calorie-goal-content input[type="radio"] {
+  margin-right: 0.5em;
+}
+
+.calorie-goal-content > div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1.5em;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Style for the recommended calories section */
+.calorie-goal-content strong {
+  color: #047857;
+  font-size: 1.08em;
+}
+
+.calorie-goal-content small {
+  color: #666;
+  font-size: 0.95em;
+}
+
+@media (max-width: 700px) {
+  .calorie-goal-popup {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem;
+  }
+  .calorie-goal-input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 /* Responsive adjustments for mobile devices */
 @media (max-width: 700px) {
   .app-container {
