@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Diary.css';
 import { db } from './firebase'; // adjust path if needed
 import { getAuth } from 'firebase/auth';
-import { collection, query, where, onSnapshot, deleteDoc, doc, Timestamp } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, deleteDoc, doc, addDoc, Timestamp } from 'firebase/firestore';
 
 function Diary() {
   const [notes, setNotes] = useState([]);
@@ -12,13 +12,14 @@ function Diary() {
   const [foodLog, setFoodLog] = useState([]);
   const dailyGoal = 2000;
 
-  // Listen for food log changes for the current user and date
   useEffect(() => {
     const auth = getAuth();
     const user = auth.currentUser;
+
     if (!user) {
       setFoodLog([]);
       setCaloriesConsumed(0);
+      setNotes([]);
       return;
     }
 
@@ -28,6 +29,7 @@ function Diary() {
     const end = new Date(currentDate);
     end.setHours(23, 59, 59, 999);
 
+    // Food log query
     const foodsRef = collection(db, 'users', user.uid, 'foods');
     const q = query(
       foodsRef,
@@ -35,9 +37,7 @@ function Diary() {
       where('timestamp', '<=', Timestamp.fromDate(end))
     );
 
-    console.log(foodsRef);
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribeFoods = onSnapshot(q, (snapshot) => {
       const foods = [];
       let totalCalories = 0;
       snapshot.forEach(docSnap => {
@@ -56,7 +56,27 @@ function Diary() {
       setCaloriesConsumed(totalCalories);
     });
 
-    return () => unsubscribe();
+    // Notes query for the current day
+    const notesRef = collection(db, 'users', user.uid, 'notes');
+    const notesQ = query(
+      notesRef,
+      where('date', '>=', Timestamp.fromDate(start)),
+      where('date', '<=', Timestamp.fromDate(end))
+    );
+
+    const unsubscribeNotes = onSnapshot(notesQ, (snapshot) => {
+      const notesArr = [];
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.text) notesArr.push({ ...data, id: docSnap.id });
+      });
+      setNotes(notesArr);
+    });
+
+    return () => {
+      unsubscribeFoods();
+      unsubscribeNotes();
+    };
   }, [currentDate]);
 
   // Delete food item from Firestore
@@ -72,18 +92,37 @@ function Diary() {
     }
   };
 
-  // Function to handle adding a new note
-  const addNote = () => {
-    if (newNote.trim() !== "") {
-      setNotes([...notes, newNote]);
+  // Add a new note to Firestore for the current date
+  const addNote = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user || newNote.trim() === "") return;
+    try {
+      await addDoc(
+        collection(db, 'users', user.uid, 'notes'),
+        {
+          text: newNote.trim(),
+          date: Timestamp.fromDate(new Date(currentDate))
+        }
+      );
       setNewNote("");
+    } catch (error) {
+      alert('Failed to add note.');
+      console.error(error);
     }
   };
 
-  // Function to handle deleting a note
-  const deleteNote = (index) => {
-    const updatedNotes = notes.filter((_, i) => i !== index);
-    setNotes(updatedNotes);
+  // Delete a note from Firestore
+  const deleteNote = async (noteId) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+      await deleteDoc(doc(db, 'users', user.uid, 'notes', noteId));
+    } catch (error) {
+      alert('Failed to delete note.');
+      console.error(error);
+    }
   };
 
   // Function to handle moving to the previous day
@@ -153,10 +192,10 @@ function Diary() {
           </div>
           <div className="notes-box">
             <ul>
-              {notes.map((note, index) => (
-                <li key={index}>
-                  <strong>{note}</strong>
-                  <button onClick={() => deleteNote(index)} className="delete-btn">X</button>
+              {notes.map((note) => (
+                <li key={note.id}>
+                  <strong>{note.text}</strong>
+                  <button onClick={() => deleteNote(note.id)} className="delete-btn">X</button>
                 </li>
               ))}
             </ul>
@@ -198,7 +237,7 @@ function Diary() {
               <button
                 className="delete-btn"
                 onClick={() => handleDeleteFood(food.id)}
-                style={{ marginLeft: 8, backgoundColor: "red", color: "white" }}
+                style={{ marginLeft: 8, backgroundColor: "red", color: "white" }}
               >
                 X
               </button>
