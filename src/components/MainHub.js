@@ -312,7 +312,14 @@ function MainHub() {
   };
 
   if (!isLoggedIn) {
-    return <Login onLogin={() => setIsLoggedIn(true)} />;
+    return (
+      <Login
+        onLogin={() => {
+          setIsLoggedIn(true);
+          setShowCalorieGoal(true); // Show calorie goal popup immediately after login/signup
+        }}
+      />
+    );
   }
 
   return (
