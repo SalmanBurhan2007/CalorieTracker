@@ -7,6 +7,7 @@ import LogFood from "./LogFood";
 import ScanMeal from "./ScanMeal";
 import Login from "./Login";
 import "./MainHub.css";
+import { getAuth } from "firebase/auth";
 
 // SettingsPopup component
 function SettingsPopup({ onClose, onLogout, onEditProfile, onCalorieGoal }) {
@@ -239,13 +240,16 @@ function CalorieGoalPopup({ onClose, userId, onSave }) {
   );
 }
 
-function EditProfilePopup({ onClose, userId, currentName, onSave }) {
+function EditProfilePopup({ onClose, currentName, onSave }) {
   const [name, setName] = useState(currentName || "");
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
     setSaving(true);
-    await setDoc(doc(db, "users", userId), { name }, { merge: true });
+    await setDoc(doc(db, "users", user.uid), { name }, { merge: true });
     setSaving(false);
     onSave({ name });
     onClose();
@@ -284,6 +288,7 @@ function MainHub() {
   const [showSettings, setShowSettings] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showCalorieGoal, setShowCalorieGoal] = useState(false);
+  
   const [user, setUser] = useState({
     id: "user123", // Replace with real user ID from auth
     name: "User"
@@ -370,7 +375,6 @@ function MainHub() {
       {showEditProfile && (
         <EditProfilePopup
           onClose={() => setShowEditProfile(false)}
-          userId={user.id}
           currentName={user.name}
           onSave={updated => setUser(u => ({ ...u, ...updated }))}
         />
