@@ -4,8 +4,8 @@ import { db } from './firebase'; // adjust path if needed
 import { getAuth } from 'firebase/auth';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const APP_ID = "b6075a03"; // Replace with your Nutritionix Application ID
-const API_KEY = "48c559b4bc460dfdb75a2f69335cb943"; // Replace with your Nutritionix API Key
+const APP_ID = "894eee99"; // Replace with your Nutritionix Application ID
+const API_KEY = "e882b07c8a13502616718f881f6ae51e"; // Replace with your Nutritionix API Key
 
 const LogFood = ({ addFoodToDiary }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,6 +34,8 @@ const LogFood = ({ addFoodToDiary }) => {
     }
     return food;
   };
+
+  const meat = ["lamb", "beef", "chicken", "turkey", "duck", "goose", "rabbit", "goat"];
 
   const handleSearch = async () => {
     if (!searchTerm) return;
@@ -91,6 +93,20 @@ const LogFood = ({ addFoodToDiary }) => {
       const name = (food.food_name || "").toLowerCase();
       const brand = (food.brand_name || "").toLowerCase();
       // Check in food name or brand name
+      if (food.brand_name) {
+        if (food.nf_ingredient_statement) {
+          const ingredientsStr = food.nf_ingredient_statement.toLowerCase();
+          const foundHaram = haramIngredients.find(haram =>
+            ingredientsStr.includes(haram));
+          if (foundHaram) {
+            return true;
+          }
+        } 
+        else {
+          console.log("No list");
+        }
+      }
+
       if (haramIngredients.some(ingredient =>
         name.includes(ingredient) || brand.includes(ingredient)
       )) {
@@ -131,8 +147,24 @@ const LogFood = ({ addFoodToDiary }) => {
       console.log("Food is not on the boycott list:", foodBrand, foodName);
     }
 
+    if (food.brand_name)
+    {
+      if (!food.nf_ingredient_statement)
+      {
+        alert(`WARNING: ${food.food_name || food.name} MAY contain haram ingredients, please verify manually.`);
+      }
+      else
+      {
+        const ingredientsStr = food.nf_ingredient_statement.toLowerCase();
+        const foundMeat = meat.find(meat =>
+          ingredientsStr.includes(meat)
+        );
+        if (foundMeat) {
+          alert(`WARNING: ${food.food_name || food.name} contains meat which may not be halal-certified.`);
+        }
+      }
+    }
     
-
     setSelectedFood(food); // Open popup with selected food
     setServingSize("1"); // Reset serving size to "1"
   };
@@ -203,7 +235,7 @@ const LogFood = ({ addFoodToDiary }) => {
       <div className="logfood-search">
         <input
           type="text"
-          placeholder="Search for a food..."
+          placeholder="Search for a halal food..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyDown={e => { if (e.key === "Enter") handleSearch(); }}
@@ -211,7 +243,7 @@ const LogFood = ({ addFoodToDiary }) => {
         <button onClick={handleSearch}>Search</button>
       </div>
 
-      <h3 className="logfood-history-title">Food List</h3>
+      <h3 className="logfood-history-title">Halal Food List</h3>
       <div className="logfood-history-list">
         {loading ? (
           <div>Loading...</div>
