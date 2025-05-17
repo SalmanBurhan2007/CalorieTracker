@@ -1,16 +1,17 @@
 import React, { useRef, useEffect, useState } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import { getAuth } from "firebase/auth";
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from './firebase';
 
-const APP_ID = "3d645e62";
-const API_KEY = "68ea71e992fa9881ade38300823db61d";
+const APP_ID = "894eee99";
+const API_KEY = "e882b07c8a13502616718f881f6ae51e";
 
 function ScanMeal({ addFoodToDiary }) {
   const videoRef = useRef(null);
   const [selectedFood, setSelectedFood] = useState(null);
   const [servingSize, setServingSize] = useState("1");
-  //const [cameraActive, setCameraActive] = useState(false);
-
+  
   // MacroCircle helper from LogFood.js
   function MacroCircle({ label, value, color, unit }) {
     return (
@@ -76,6 +77,8 @@ function ScanMeal({ addFoodToDiary }) {
     "diglycerides (animal)"
   ];
 
+  const meat = ["lamb", "beef", "chicken", "turkey", "duck", "goose", "rabbit", "goat"];
+
   const companies = [
     "tim hortons", "starbucks", "nestle", "coca cola", "pepsi", "kraft", "mondelez", "unilever", "procter & gamble",
     "general mills", "campbell's soup", "7up", "mcdonald's", "burger king", "kfc", "pizza hut", "domino's pizza", "sodastream"
@@ -103,18 +106,25 @@ function ScanMeal({ addFoodToDiary }) {
       alert("Warning: This food is produced by a company on the boycott list.");
     }
 
-    // Haram check
+    // Check in food name or brand name
     if (food.brand_name) {
-      if (food.ingredients) {
-        const ingredientsStr = food.ingredients.toLowerCase();
+      if (food.nf_ingredient_statement) {
+        const ingredientsStr = food.nf_ingredient_statement.toLowerCase();
         const foundHaram = haramIngredients.find(haram =>
-          ingredientsStr.includes(haram)
+          ingredientsStr.includes(haram));
+        const foundMeat = meat.find(meat =>
+          ingredientsStr.includes(meat)
         );
         if (foundHaram) {
-          alert(`Warning: This food contains a haram ingredient: ${foundHaram}`);
+          alert(`WARNING: ${food.food_name || food.name} contains haram ingredients.`);
         }
-      } else {
-        alert("This branded food does not have an ingredients list. Please verify yourself if it is halal.");
+        else if (foundMeat) {
+          alert(`WARNING: ${food.food_name || food.name} contains meat which may not be halal-certified.`);
+        }
+      } 
+      else {
+        alert(`WARNING: ${food.food_name || food.name} COULD be haram, please verify manually.`);
+        console.log("No list");
       }
     }
 
@@ -123,38 +133,45 @@ function ScanMeal({ addFoodToDiary }) {
   };
 
   const confirmAddFood = async () => {
-    const servingNum = parseFloat(servingSize);
-    if (!servingSize || isNaN(servingNum) || servingNum <= 0) {
-      alert("Please enter a valid serving size.");
-      return;
-    }
-    if (addFoodToDiary) addFoodToDiary(selectedFood);
-
-    // Firestore logic (similar to LogFood.js)
-    try {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (!user) throw new Error("User not logged in");
-      const userId = user.uid;
-
-      const foodToSave = {
-      ...selectedFood,
-      servingSize: servingNum,
-      date: new Date().toISOString().slice(0, 10)
-      };
-
-      // Lazy load Firestore to avoid import at top
-      const { getFirestore, collection, addDoc } = await import("firebase/firestore");
-      const { getApp } = await import("firebase/app");
-      const db = getFirestore(getApp());
-
-      await addDoc(collection(db, "users", userId, "foods"), foodToSave);
-    } catch (err) {
-      console.error("Error saving food to Firestore:", err);
-    }
-
-    setSelectedFood(null); // Close popup after adding
-  };
+      const servingNum = parseFloat(servingSize);
+      if (!servingSize || isNaN(servingNum) || servingNum <= 0) {
+        alert("Please enter a valid serving size.");
+        return;
+      }
+      if (addFoodToDiary) addFoodToDiary(selectedFood);
+  
+      // Adjust macros based on the serving size
+      const adjustedCalories = Math.round((selectedFood.nf_calories || 0) * servingNum);
+      const protein = Math.round((selectedFood.full_nutrients?.find(n => n.attr_id === 203)?.value || 0) * servingNum); // Protein (attr_id: 203)
+      const fat = Math.round((selectedFood.full_nutrients?.find(n => n.attr_id === 204)?.value || 0) * servingNum);    // Fat (attr_id: 204)
+      const carbs = Math.round((selectedFood.full_nutrients?.find(n => n.attr_id === 205)?.value || 0) * servingNum);  // Carbs (attr_id: 205)
+  
+      // Add to Firestore for the user
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) {
+          alert('You must be logged in to add food.');
+          return;
+        }
+        await addDoc(
+          collection(db, 'users', user.uid, 'foods'),
+          {
+            ...selectedFood,
+            nf_calories: adjustedCalories, // Adjusted calories
+            protein, // Adjusted protein
+            fat,     // Adjusted fat
+            carbs,   // Adjusted carbs
+            serving_size: servingNum, // Store the serving size
+            timestamp: serverTimestamp()
+          }
+        );
+        setSelectedFood(null); // Close popup after adding
+      } catch (error) {
+        console.error('Error adding food to Firestore:', error);
+        alert(error);
+      }
+    };
 
   useEffect(() => {
     let codeReader;
