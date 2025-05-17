@@ -139,7 +139,7 @@ function ScanMeal({ addFoodToDiary }) {
         return;
       }
       
-      addFoodToDiary(selectedFood); // Add food to diary, firestore will handle the rest
+      if (addFoodToDiary) addFoodToDiary(selectedFood); // Add food to diary, Firestore will handle the rest, as long as addFoodToDiary was passed down
   
       // Adjust macros based on the serving size
       const adjustedCalories = Math.round((selectedFood.nf_calories || 0) * servingNum);
