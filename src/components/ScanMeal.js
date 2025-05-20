@@ -80,7 +80,7 @@ function ScanMeal({ addFoodToDiary }) {
   const meat = ["lamb", "beef", "chicken", "turkey", "duck", "goose", "rabbit", "goat"];
 
   const companies = [
-    "tim hortons", "starbucks", "nestle", "coca cola", "pepsi", "kraft", "mondelez", "unilever", "procter & gamble",
+    "tim hortons", "tim horton's", "starbucks", "nestle", "coca cola", "pepsi", "kraft", "mondelez", "unilever", "procter & gamble",
     "general mills", "campbell's soup", "7up", "mcdonald's", "burger king", "kfc", "pizza hut", "domino's pizza", "sodastream"
   ];
 
