@@ -124,7 +124,7 @@ const LogFood = ({ addFoodToDiary }) => {
   };
 
   const handleAdd = async (food) => {
-    const companies = ["tim hortons", "starbucks", "nestle", "coca cola", "pepsi", "kraft", "mondelez", "unilever", "procter & gamble", "general mills", "campbell's soup", "7up", "mcdonald's", "burger king", "kfc", "pizza hut", "domino's pizza", "sodastream"]; // Boycotted companies
+    const companies = ["tim hortons", "tim horton's", "starbucks", "nestle", "coca cola", "pepsi", "kraft", "mondelez", "unilever", "procter & gamble", "general mills", "campbell's soup", "7up", "mcdonald's", "burger king", "kfc", "pizza hut", "domino's pizza", "sodastream"]; // Boycotted companies
     const meat = ["lamb", "beef", "chicken", "turkey", "duck", "goose", "rabbit", "goat"]; // All meats which MAY be haram
 
     // Use word boundary regex for robust matching
